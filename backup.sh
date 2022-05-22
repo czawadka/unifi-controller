@@ -9,7 +9,10 @@
 # 2 2 * * * /bin/bash -c 'cd ~/unifi-controller; ./backup.sh'
 do_backup() {
 	echo "Unifi backup rclone BEGIN"
-	rclone sync -v config/data/backup/ unifi-backup:backup/unifi/
+	# unifi-backup=Dropbox
+	# rclone sync -v config/data/backup/ unifi-backup:backup/unifi/
+	# s3=AWS S3
+	rclone sync -v --fast-list --checksum config/data/backup/ s3:backup-unifi
 	echo "Unifi backup rclone END"
 }
 

@@ -2,11 +2,16 @@
 version: "2.1"
 services:
   unifi-controller:
-    image: lscr.io/linuxserver/unifi-controller
+    image: lscr.io/linuxserver/unifi-network-application
     container_name: unifi-controller
     environment:
       - PUID=1000
       - PGID=1000
+      - MONGO_USER=unifi
+      - MONGO_PASS=
+      - MONGO_HOST=unifi-db
+      - MONGO_PORT=27017
+      - MONGO_DBNAME=unifi
       - MEM_LIMIT=1024 #optional
       - MEM_STARTUP=1024 #optional
     volumes:
@@ -21,5 +26,14 @@ services:
       - 8880:8880 #optional
       - 6789:6789 #optional
       - 5514:5514/udp #optional
+    depends_on:
+      - unifi-db
     restart: unless-stopped
-
+  unifi-db:
+      image: docker.io/mongo:7.0.11
+      container_name: unifi-db
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: "unifi"
+        MONGO_INITDB_ROOT_PASSWORD: ""
+      volumes:
+        - ./db:/data/db
